@@ -2821,8 +2821,10 @@ Node.prototype.onEvent = function (event) {
     this._updateDomValue();
   }
 
-  // value events
   var domValue = dom.value;
+  var domField = dom.field;
+  
+  // value events
   if (target == domValue) {
     //noinspection FallthroughInSwitchStatementJS
     switch (type) {
@@ -2874,16 +2876,12 @@ Node.prototype.onEvent = function (event) {
   }
 
   // field events
-  var domField = dom.field;
   if (target == domField) {
     switch (type) {
       case 'blur':
       case 'change':
         this._getDomField(true);
         this._updateDomField();
-        if (this.field) {
-          domField.innerHTML = this._escapeHTML(this.field);
-        }
         this._updateSchema();
         break;
 

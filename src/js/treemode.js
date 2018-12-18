@@ -286,12 +286,12 @@ treemode.update = function (json) {
  */
 treemode.get = function () {
   // remove focus from currently edited node
-  if (this.focusTarget) {
+  /*if (this.focusTarget) {
     var node = Node.getNodeFromTarget(this.focusTarget);
     if (node) {
       node.blur();
     }
-  }
+  }*/
 
   if (this.node) {
     return this.node.getValue();

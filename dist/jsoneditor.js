@@ -30389,12 +30389,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	treemode.get = function () {
 	  // remove focus from currently edited node
-	  if (this.focusTarget) {
+	  /*if (this.focusTarget) {
 	    var node = Node.getNodeFromTarget(this.focusTarget);
 	    if (node) {
 	      node.blur();
 	    }
-	  }
+	  }*/
 
 	  if (this.node) {
 	    return this.node.getValue();
@@ -38373,8 +38373,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._updateDomValue();
 	  }
 
-	  // value events
 	  var domValue = dom.value;
+	  var domField = dom.field;
+	  
+	  // value events
 	  if (target == domValue) {
 	    //noinspection FallthroughInSwitchStatementJS
 	    switch (type) {
@@ -38426,16 +38428,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  // field events
-	  var domField = dom.field;
 	  if (target == domField) {
 	    switch (type) {
 	      case 'blur':
 	      case 'change':
 	        this._getDomField(true);
 	        this._updateDomField();
-	        if (this.field) {
-	          domField.innerHTML = this._escapeHTML(this.field);
-	        }
 	        this._updateSchema();
 	        break;
 
