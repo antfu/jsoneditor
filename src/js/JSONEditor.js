@@ -82,6 +82,14 @@ if (typeof Promise === 'undefined') {
  *                                                  Only applicable for
  *                                                  modes 'form', 'tree' and
  *                                                  'view'
+ *                               {Boolean} dragButton Enable drag button.
+ *                                                    True by default
+ *                                                    Only applicable for modes
+ *                                                    'tree', 'view', and 'form'
+ *                               {Boolean} menuButton Enable context menu button.
+ *                                                    True by default
+ *                                                    Only applicable for modes
+ *                                                    'tree', 'view', and 'form'
  * @param {Object | undefined} json JSON object
  */
 function JSONEditor (container, options, json) {
@@ -168,7 +176,8 @@ JSONEditor.VALID_OPTIONS = [
   'timestampTag',
   'displayFieldBySchemaTitle',
   'escapeUnicode', 'history', 'search', 'mode', 'modes', 'name', 'indentation',
-  'sortObjectKeys', 'navigationBar', 'statusBar', 'mainMenuBar', 'languages', 'language', 'enableSort', 'enableTransform'
+  'sortObjectKeys', 'navigationBar', 'statusBar', 'mainMenuBar', 'languages', 'language', 'enableSort', 'enableTransform',
+  'dragButton', 'menuButton'
 ];
 
 /**
