@@ -25,7 +25,7 @@
  *
  * @author  Jos de Jong, <wjosdejong@gmail.com>
  * @version 5.26.3
- * @date    2018-12-06
+ * @date    2018-12-18
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -167,6 +167,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *                                                  Only applicable for
 	 *                                                  modes 'form', 'tree' and
 	 *                                                  'view'
+	 *                               {Boolean} dragButton Enable drag button.
+	 *                                                    True by default
+	 *                                                    Only applicable for modes
+	 *                                                    'tree', 'view', and 'form'
+	 *                               {Boolean} menuButton Enable context menu button.
+	 *                                                    True by default
+	 *                                                    Only applicable for modes
+	 *                                                    'tree', 'view', and 'form'
 	 * @param {Object | undefined} json JSON object
 	 */
 	function JSONEditor (container, options, json) {
@@ -251,8 +259,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'onSelectionChange', 'onTextSelectionChange',
 	  'colorPicker', 'onColorPicker',
 	  'timestampTag',
+	  'displayFieldBySchemaTitle',
 	  'escapeUnicode', 'history', 'search', 'mode', 'modes', 'name', 'indentation',
-	  'sortObjectKeys', 'navigationBar', 'statusBar', 'mainMenuBar', 'languages', 'language', 'enableSort', 'enableTransform'
+	  'sortObjectKeys', 'navigationBar', 'statusBar', 'mainMenuBar', 'languages', 'language', 'enableSort', 'enableTransform',
+	  'dragButton', 'menuButton'
 	];
 
 	/**
@@ -1592,6 +1602,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    mainMenuBar: true,
 	    onSelectionChange: null,
 	    colorPicker: true,
+	    dragButton: true,
+	    menuButton: true,
 	    onColorPicker: function (parent, color, onChange) {
 	      if (VanillaPicker) {
 	        new VanillaPicker({
@@ -6540,178 +6552,188 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _locales = ['en', 'pt-BR'];
 	var _defs = {
 	  en: {
-	    'array': 'Array',
-	    'auto': 'Auto',
-	    'appendText': 'Append',
-	    'appendTitle': 'Append a new field with type \'auto\' after this field (Ctrl+Shift+Ins)',
-	    'appendSubmenuTitle': 'Select the type of the field to be appended',
-	    'appendTitleAuto': 'Append a new field with type \'auto\' (Ctrl+Shift+Ins)',
-	    'ascending': 'Ascending',
-	    'ascendingTitle': 'Sort the childs of this ${type} in ascending order',
-	    'actionsMenu': 'Click to open the actions menu (Ctrl+M)',
-	    'collapseAll': 'Collapse all fields',
-	    'descending': 'Descending',
-	    'descendingTitle': 'Sort the childs of this ${type} in descending order',
-	    'drag': 'Drag to move this field (Alt+Shift+Arrows)',
-	    'duplicateKey': 'duplicate key',
-	    'duplicateText': 'Duplicate',
-	    'duplicateTitle': 'Duplicate selected fields (Ctrl+D)',
-	    'duplicateField': 'Duplicate this field (Ctrl+D)',
-	    'empty': 'empty',
-	    'expandAll': 'Expand all fields',
-	    'expandTitle': 'Click to expand/collapse this field (Ctrl+E). \n' +
-	    'Ctrl+Click to expand/collapse including all childs.',
-	    'insert': 'Insert',
-	    'insertTitle': 'Insert a new field with type \'auto\' before this field (Ctrl+Ins)',
-	    'insertSub': 'Select the type of the field to be inserted',
-	    'object': 'Object',
-	    'ok': 'Ok',
-	    'redo': 'Redo (Ctrl+Shift+Z)',
-	    'removeText': 'Remove',
-	    'removeTitle': 'Remove selected fields (Ctrl+Del)',
-	    'removeField': 'Remove this field (Ctrl+Del)',
-	    'selectNode': 'Select a node...',
-	    'showAll': 'show all',
-	    'showMore': 'show more',
-	    'showMoreStatus': 'displaying ${visibleChilds} of ${totalChilds} items.',
-	    'sort': 'Sort',
-	    'sortTitle': 'Sort the childs of this ${type}',
-	    'sortTitleShort': 'Sort contents',
-	    'sortFieldLabel': 'Field:',
-	    'sortDirectionLabel': 'Direction:',
-	    'sortFieldTitle': 'Select the nested field by which to sort the array or object',
-	    'sortAscending': 'Ascending',
-	    'sortAscendingTitle': 'Sort the selected field in ascending order',
-	    'sortDescending': 'Descending',
-	    'sortDescendingTitle': 'Sort the selected field in descending order',
-	    'string': 'String',
-	    'transform': 'Transform',
-	    'transformTitle': 'Filter, sort, or transform the childs of this ${type}',
-	    'transformTitleShort': 'Filter, sort, or transform contents',
-	    'transformQueryTitle': 'Enter a JMESPath query',
-	    'transformWizardLabel': 'Wizard',
-	    'transformWizardFilter': 'Filter',
-	    'transformWizardSortBy': 'Sort by',
-	    'transformWizardSelectFields': 'Select fields',
-	    'transformQueryLabel': 'Query',
-	    'transformPreviewLabel': 'Preview',
-	    'type': 'Type',
-	    'typeTitle': 'Change the type of this field',
-	    'openUrl': 'Ctrl+Click or Ctrl+Enter to open url in new window',
-	    'undo': 'Undo last action (Ctrl+Z)',
-	    'validationCannotMove': 'Cannot move a field into a child of itself',
-	    'autoType': 'Field type "auto". ' +
-	    'The field type is automatically determined from the value ' +
-	    'and can be a string, number, boolean, or null.',
-	    'objectType': 'Field type "object". ' +
-	    'An object contains an unordered set of key/value pairs.',
-	    'arrayType': 'Field type "array". ' +
-	    'An array contains an ordered collection of values.',
-	    'stringType': 'Field type "string". ' +
-	    'Field type is not determined from the value, ' +
-	    'but always returned as string.'
+	    array: 'Array',
+	    auto: 'Auto',
+	    appendText: 'Append',
+	    appendTitle: 'Append a new field with type \'auto\' after this field (Ctrl+Shift+Ins)',
+	    appendSubmenuTitle: 'Select the type of the field to be appended',
+	    appendTitleAuto: 'Append a new field with type \'auto\' (Ctrl+Shift+Ins)',
+	    ascending: 'Ascending',
+	    ascendingTitle: 'Sort the childs of this ${type} in ascending order',
+	    actionsMenu: 'Click to open the actions menu (Ctrl+M)',
+	    collapseAll: 'Collapse all fields',
+	    descending: 'Descending',
+	    descendingTitle: 'Sort the childs of this ${type} in descending order',
+	    drag: 'Drag to move this field (Alt+Shift+Arrows)',
+	    duplicateKey: 'duplicate key',
+	    duplicateText: 'Duplicate',
+	    duplicateTitle: 'Duplicate selected fields (Ctrl+D)',
+	    duplicateField: 'Duplicate this field (Ctrl+D)',
+	    empty: 'empty',
+	    expandAll: 'Expand all fields',
+	    expandTitle: 'Click to expand/collapse this field (Ctrl+E). \n' +
+	      'Ctrl+Click to expand/collapse including all childs.',
+	    insert: 'Insert',
+	    insertTitle: 'Insert a new field with type \'auto\' before this field (Ctrl+Ins)',
+	    insertSub: 'Select the type of the field to be inserted',
+	    object: 'Object',
+	    ok: 'Ok',
+	    redo: 'Redo (Ctrl+Shift+Z)',
+	    removeText: 'Remove',
+	    removeTitle: 'Remove selected fields (Ctrl+Del)',
+	    removeField: 'Remove this field (Ctrl+Del)',
+	    selectNode: 'Select a node...',
+	    showAll: 'show all',
+	    showMore: 'show more',
+	    showMoreStatus: 'displaying ${visibleChilds} of ${totalChilds} items.',
+	    sort: 'Sort',
+	    sortTitle: 'Sort the childs of this ${type}',
+	    sortTitleShort: 'Sort contents',
+	    sortFieldLabel: 'Field:',
+	    sortDirectionLabel: 'Direction:',
+	    sortFieldTitle: 'Select the nested field by which to sort the array or object',
+	    sortAscending: 'Ascending',
+	    sortAscendingTitle: 'Sort the selected field in ascending order',
+	    sortDescending: 'Descending',
+	    sortDescendingTitle: 'Sort the selected field in descending order',
+	    string: 'String',
+	    transform: 'Transform',
+	    transformTitle: 'Filter, sort, or transform the childs of this ${type}',
+	    transformTitleShort: 'Filter, sort, or transform contents',
+	    transformQueryTitle: 'Enter a JMESPath query',
+	    transformWizardLabel: 'Wizard',
+	    transformWizardFilter: 'Filter',
+	    transformWizardSortBy: 'Sort by',
+	    transformWizardSelectFields: 'Select fields',
+	    transformQueryLabel: 'Query',
+	    transformPreviewLabel: 'Preview',
+	    type: 'Type',
+	    typeTitle: 'Change the type of this field',
+	    openUrl: 'Ctrl+Click or Ctrl+Enter to open url in new window',
+	    undo: 'Undo last action (Ctrl+Z)',
+	    validationCannotMove: 'Cannot move a field into a child of itself',
+	    autoType: 'Field type "auto". ' +
+	      'The field type is automatically determined from the value ' +
+	      'and can be a string, number, boolean, or null.',
+	    objectType: 'Field type "object". ' +
+	      'An object contains an unordered set of key/value pairs.',
+	    arrayType: 'Field type "array". ' +
+	      'An array contains an ordered collection of values.',
+	    stringType: 'Field type "string". ' +
+	      'Field type is not determined from the value, ' +
+	      'but always returned as string.',
+	    modeCodeText: 'Code',
+	    modeCodeTitle: 'Switch to code highlighter',
+	    modeFormText: 'Form',
+	    modeFormTitle: 'Switch to form editor',
+	    modeTextText: 'Text',
+	    modeTextTitle: 'Switch to plain text editor',
+	    modeTreeText: 'Tree',
+	    modeTreeTitle: 'Switch to tree editor',
+	    modeViewText: 'View',
+	    modeViewTitle: 'Switch to tree view',
 	  },
 	  'pt-BR': {
-	    'array': 'Lista',
-	    'auto': 'Automatico',
-	    'appendText': 'Adicionar',
-	    'appendTitle': 'Adicionar novo campo com tipo \'auto\' depois deste campo (Ctrl+Shift+Ins)',
-	    'appendSubmenuTitle': 'Selecione o tipo do campo a ser adicionado',
-	    'appendTitleAuto': 'Adicionar novo campo com tipo \'auto\' (Ctrl+Shift+Ins)',
-	    'ascending': 'Ascendente',
-	    'ascendingTitle': 'Organizar filhor do tipo ${type} em crescente',
-	    'actionsMenu': 'Clique para abrir o menu de ações (Ctrl+M)',
-	    'collapseAll': 'Fechar todos campos',
-	    'descending': 'Descendente',
-	    'descendingTitle': 'Organizar o filhos do tipo ${type} em decrescente',
-	    'duplicateKey': 'chave duplicada',
-	    'drag': 'Arraste para mover este campo (Alt+Shift+Arrows)',
-	    'duplicateText': 'Duplicar',
-	    'duplicateTitle': 'Duplicar campos selecionados (Ctrl+D)',
-	    'duplicateField': 'Duplicar este campo (Ctrl+D)',
-	    'empty': 'vazio',
-	    'expandAll': 'Expandir todos campos',
-	    'expandTitle': 'Clique para expandir/encolher este campo (Ctrl+E). \n' +
-	    'Ctrl+Click para expandir/encolher incluindo todos os filhos.',
-	    'insert': 'Inserir',
-	    'insertTitle': 'Inserir um novo campo do tipo \'auto\' antes deste campo (Ctrl+Ins)',
-	    'insertSub': 'Selecionar o tipo de campo a ser inserido',
-	    'object': 'Objeto',
-	    'ok': 'Ok',
-	    'redo': 'Refazer (Ctrl+Shift+Z)',
-	    'removeText': 'Remover',
-	    'removeTitle': 'Remover campos selecionados (Ctrl+Del)',
-	    'removeField': 'Remover este campo (Ctrl+Del)',
+	    array: 'Lista',
+	    auto: 'Automatico',
+	    appendText: 'Adicionar',
+	    appendTitle: 'Adicionar novo campo com tipo \'auto\' depois deste campo (Ctrl+Shift+Ins)',
+	    appendSubmenuTitle: 'Selecione o tipo do campo a ser adicionado',
+	    appendTitleAuto: 'Adicionar novo campo com tipo \'auto\' (Ctrl+Shift+Ins)',
+	    ascending: 'Ascendente',
+	    ascendingTitle: 'Organizar filhor do tipo ${type} em crescente',
+	    actionsMenu: 'Clique para abrir o menu de ações (Ctrl+M)',
+	    collapseAll: 'Fechar todos campos',
+	    descending: 'Descendente',
+	    descendingTitle: 'Organizar o filhos do tipo ${type} em decrescente',
+	    duplicateKey: 'chave duplicada',
+	    drag: 'Arraste para mover este campo (Alt+Shift+Arrows)',
+	    duplicateText: 'Duplicar',
+	    duplicateTitle: 'Duplicar campos selecionados (Ctrl+D)',
+	    duplicateField: 'Duplicar este campo (Ctrl+D)',
+	    empty: 'vazio',
+	    expandAll: 'Expandir todos campos',
+	    expandTitle: 'Clique para expandir/encolher este campo (Ctrl+E). \n' +
+	      'Ctrl+Click para expandir/encolher incluindo todos os filhos.',
+	    insert: 'Inserir',
+	    insertTitle: 'Inserir um novo campo do tipo \'auto\' antes deste campo (Ctrl+Ins)',
+	    insertSub: 'Selecionar o tipo de campo a ser inserido',
+	    object: 'Objeto',
+	    ok: 'Ok',
+	    redo: 'Refazer (Ctrl+Shift+Z)',
+	    removeText: 'Remover',
+	    removeTitle: 'Remover campos selecionados (Ctrl+Del)',
+	    removeField: 'Remover este campo (Ctrl+Del)',
 	    // TODO: correctly translate
-	    'selectNode': 'Select a node...',
+	    selectNode: 'Select a node...',
 	    // TODO: correctly translate
-	    'showAll': 'mostre tudo',
+	    showAll: 'mostre tudo',
 	    // TODO: correctly translate
-	    'showMore': 'mostre mais',
+	    showMore: 'mostre mais',
 	    // TODO: correctly translate
-	    'showMoreStatus': 'exibindo ${visibleChilds} de ${totalChilds} itens.',
-	    'sort': 'Organizar',
-	    'sortTitle': 'Organizar os filhos deste ${type}',
+	    showMoreStatus: 'exibindo ${visibleChilds} de ${totalChilds} itens.',
+	    sort: 'Organizar',
+	    sortTitle: 'Organizar os filhos deste ${type}',
 	    // TODO: correctly translate
-	    'sortTitleShort': 'Organizar os filhos',
+	    sortTitleShort: 'Organizar os filhos',
 	    // TODO: correctly translate
-	    'sortFieldLabel': 'Field:',
+	    sortFieldLabel: 'Field:',
 	    // TODO: correctly translate
-	    'sortDirectionLabel': 'Direction:',
+	    sortDirectionLabel: 'Direction:',
 	    // TODO: correctly translate
-	    'sortFieldTitle': 'Select the nested field by which to sort the array or object',
+	    sortFieldTitle: 'Select the nested field by which to sort the array or object',
 	    // TODO: correctly translate
-	    'sortAscending': 'Ascending',
+	    sortAscending: 'Ascending',
 	    // TODO: correctly translate
-	    'sortAscendingTitle': 'Sort the selected field in ascending order',
+	    sortAscendingTitle: 'Sort the selected field in ascending order',
 	    // TODO: correctly translate
-	    'sortDescending': 'Descending',
+	    sortDescending: 'Descending',
 	    // TODO: correctly translate
-	    'sortDescendingTitle': 'Sort the selected field in descending order',
-	    'string': 'Texto',
+	    sortDescendingTitle: 'Sort the selected field in descending order',
+	    string: 'Texto',
 	    // TODO: correctly translate
-	    'transform': 'Transform',
+	    transform: 'Transform',
 	    // TODO: correctly translate
-	    'transformTitle': 'Filter, sort, or transform the childs of this ${type}',
+	    transformTitle: 'Filter, sort, or transform the childs of this ${type}',
 	    // TODO: correctly translate
-	    'transformTitleShort': 'Filter, sort, or transform contents',
+	    transformTitleShort: 'Filter, sort, or transform contents',
 	    // TODO: correctly translate
-	    'transformQueryTitle': 'Enter a JMESPath query',
+	    transformQueryTitle: 'Enter a JMESPath query',
 	    // TODO: correctly translate
-	    'transformWizardLabel': 'Wizard',
+	    transformWizardLabel: 'Wizard',
 	    // TODO: correctly translate
-	    'transformWizardFilter': 'Filter',
+	    transformWizardFilter: 'Filter',
 	    // TODO: correctly translate
-	    'transformWizardSortBy': 'Sort by',
+	    transformWizardSortBy: 'Sort by',
 	    // TODO: correctly translate
-	    'transformWizardSelectFields': 'Select fields',
+	    transformWizardSelectFields: 'Select fields',
 	    // TODO: correctly translate
-	    'transformQueryLabel': 'Query',
+	    transformQueryLabel: 'Query',
 	    // TODO: correctly translate
-	    'transformPreviewLabel': 'Preview',
-	    'type': 'Tipo',
-	    'typeTitle': 'Mudar o tipo deste campo',
-	    'openUrl': 'Ctrl+Click ou Ctrl+Enter para abrir link em nova janela',
-	    'undo': 'Desfazer último ação (Ctrl+Z)',
-	    'validationCannotMove': 'Não pode mover um campo como filho dele mesmo',
-	    'autoType': 'Campo do tipo "auto". ' +
-	    'O tipo do campo é determinao automaticamente a partir do seu valor ' +
-	    'e pode ser texto, número, verdade/falso ou nulo.',
-	    'objectType': 'Campo do tipo "objeto". ' +
-	    'Um objeto contém uma lista de pares com chave e valor.',
-	    'arrayType': 'Campo do tipo "lista". ' +
-	    'Uma lista contem uma coleção de valores ordenados.',
-	    'stringType': 'Campo do tipo "string". ' +
-	    'Campo do tipo nao é determinado através do seu valor, ' +
-	    'mas sempre retornara um texto.'
+	    transformPreviewLabel: 'Preview',
+	    type: 'Tipo',
+	    typeTitle: 'Mudar o tipo deste campo',
+	    openUrl: 'Ctrl+Click ou Ctrl+Enter para abrir link em nova janela',
+	    undo: 'Desfazer último ação (Ctrl+Z)',
+	    validationCannotMove: 'Não pode mover um campo como filho dele mesmo',
+	    autoType: 'Campo do tipo "auto". ' +
+	      'O tipo do campo é determinao automaticamente a partir do seu valor ' +
+	      'e pode ser texto, número, verdade/falso ou nulo.',
+	    objectType: 'Campo do tipo "objeto". ' +
+	      'Um objeto contém uma lista de pares com chave e valor.',
+	    arrayType: 'Campo do tipo "lista". ' +
+	      'Uma lista contem uma coleção de valores ordenados.',
+	    stringType: 'Campo do tipo "string". ' +
+	      'Campo do tipo nao é determinado através do seu valor, ' +
+	      'mas sempre retornara um texto.'
 	  }
 	};
 
 	var _defaultLang = 'en';
 	var _lang;
-	var userLang = typeof navigator !== 'undefined'
-	    ? navigator.language || navigator.userLanguage
-	    : undefined;
+	var userLang = typeof navigator !== 'undefined' ?
+	  navigator.language || navigator.userLanguage :
+	  undefined;
 	_lang = _locales.find(function (l) {
 	  return l === userLang;
 	});
@@ -8837,29 +8859,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  dom.tr.node = this;
 
 	  if (this.editor.options.mode === 'tree') { // note: we take here the global setting
-	    var tdDrag = document.createElement('td');
-	    if (this.editable.field) {
-	      // create draggable area
-	      if (this.parent) {
-	        var domDrag = document.createElement('button');
-	        domDrag.type = 'button';
-	        dom.drag = domDrag;
-	        domDrag.className = 'jsoneditor-button jsoneditor-dragarea';
-	        domDrag.title = translate('drag');
-	        tdDrag.appendChild(domDrag);
+	    if (this.editor.options.dragButton) {
+	      var tdDrag = document.createElement('td');
+	      if (this.editable.field) {
+	        // create draggable area
+	        if (this.parent) {
+	          var domDrag = document.createElement('button');
+	          domDrag.type = 'button';
+	          dom.drag = domDrag;
+	          domDrag.className = 'jsoneditor-button jsoneditor-dragarea';
+	          domDrag.title = translate('drag');
+	          tdDrag.appendChild(domDrag);
+	        }
 	      }
+	      dom.tr.appendChild(tdDrag);
 	    }
-	    dom.tr.appendChild(tdDrag);
 
 	    // create context menu
-	    var tdMenu = document.createElement('td');
-	    var menu = document.createElement('button');
-	    menu.type = 'button';
-	    dom.menu = menu;
-	    menu.className = 'jsoneditor-button jsoneditor-contextmenu';
-	    menu.title = translate('actionsMenu');
-	    tdMenu.appendChild(dom.menu);
-	    dom.tr.appendChild(tdMenu);
+	    if (this.editor.options.menuButton) {
+	      var tdMenu = document.createElement('td');
+	      var menu = document.createElement('button');
+	      menu.type = 'button';
+	      dom.menu = menu;
+	      menu.className = 'jsoneditor-button jsoneditor-contextmenu';
+	      menu.title = translate('actionsMenu');
+	      tdMenu.appendChild(dom.menu);
+	      dom.tr.appendChild(tdMenu);
+	    }
 	  }
 
 	  // create tree and field
@@ -9400,15 +9426,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Locate the JSON schema of the node and check for any enum type
 	 * @private
 	 */
-	Node.prototype._updateSchema = function () {
+	Node.prototype._updateSchema = function (focusing) {
 	  //Locating the schema of the node and checking for any enum type
 	  if(this.editor && this.editor.options) {
 	    // find the part of the json schema matching this nodes path
 	    this.schema = this.editor.options.schema
 	        ? Node._findSchema(this.editor.options.schema, this.getPath())
 	        : null;
+	    if (this.schema === this.editor.options.schema)
+	      this.schema = null
 	    if (this.schema) {
 	      this.enum = Node._findEnum(this.schema);
+	      if (!focusing && this.schema.title && this.editor.options.displayFieldBySchemaTitle)
+	        this.dom.field.innerHTML = this._escapeHTML(this.schema.title);
 	    }
 	    else {
 	      delete this.enum;
@@ -9764,13 +9794,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.field) {
 	          domField.innerHTML = this._escapeHTML(this.field);
 	        }
+	        this._updateSchema();
 	        break;
 
+	      case 'focus':
+	        if (this.field) {
+	          domField.innerHTML = this._escapeHTML(this.field);
+	        }
+	        break;
+	        
 	      case 'input':
 	        this._getDomField(true);
-	        this._updateSchema();
 	        this._updateDomField();
 	        this._updateDomValue();
+	        this._updateSchema(true);
 	        break;
 
 	      case 'keydown':
@@ -16734,6 +16771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var ContextMenu = __webpack_require__(10);
+	var translate = __webpack_require__(15).translate;
 
 	/**
 	 * Create a select box to be used in the editor menu's, which allows to switch mode
@@ -16747,36 +16785,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // available modes
 	  var availableModes = {
 	    code: {
-	      'text': 'Code',
-	      'title': 'Switch to code highlighter',
+	      'text': translate('modeCodeText'),
+	      'title': translate('modeCodeTitle'),
 	      'click': function () {
 	        onSwitch('code')
 	      }
 	    },
 	    form: {
-	      'text': 'Form',
-	      'title': 'Switch to form editor',
+	      'text': translate('modeFormText'),
+	      'title': translate('modeFormTitle'),
 	      'click': function () {
 	        onSwitch('form');
 	      }
 	    },
 	    text: {
-	      'text': 'Text',
-	      'title': 'Switch to plain text editor',
+	      'text': translate('modeTextText'),
+	      'title': translate('modeTextTitle'),
 	      'click': function () {
 	        onSwitch('text');
 	      }
 	    },
 	    tree: {
-	      'text': 'Tree',
-	      'title': 'Switch to tree editor',
+	      'text': translate('modeTreeText'),
+	      'title': translate('modeTreeTitle'),
 	      'click': function () {
 	        onSwitch('tree');
 	      }
 	    },
 	    view: {
-	      'text': 'View',
-	      'title': 'Switch to tree view',
+	      'text': translate('modeViewText'),
+	      'title': translate('modeViewTitle'),
 	      'click': function () {
 	        onSwitch('view');
 	      }
@@ -16846,7 +16884,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	module.exports = ModeSwitcher;
-
 
 /***/ },
 /* 27 */
