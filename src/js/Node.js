@@ -2512,15 +2512,19 @@ Node.prototype.updateDom = function (options) {
  * Locate the JSON schema of the node and check for any enum type
  * @private
  */
-Node.prototype._updateSchema = function () {
+Node.prototype._updateSchema = function (focusing) {
   //Locating the schema of the node and checking for any enum type
   if(this.editor && this.editor.options) {
     // find the part of the json schema matching this nodes path
     this.schema = this.editor.options.schema
         ? Node._findSchema(this.editor.options.schema, this.getPath())
         : null;
+    if (this.schema === this.editor.options.schema)
+      this.schema = null
     if (this.schema) {
       this.enum = Node._findEnum(this.schema);
+      if (!focusing && this.schema.title && this.editor.options.displayFieldBySchemaTitle)
+        this.dom.field.innerHTML = this._escapeHTML(this.schema.title);
     }
     else {
       delete this.enum;
@@ -2876,13 +2880,20 @@ Node.prototype.onEvent = function (event) {
         if (this.field) {
           domField.innerHTML = this._escapeHTML(this.field);
         }
+        this._updateSchema();
         break;
 
+      case 'focus':
+        if (this.field) {
+          domField.innerHTML = this._escapeHTML(this.field);
+        }
+        break;
+        
       case 'input':
         this._getDomField(true);
-        this._updateSchema();
         this._updateDomField();
         this._updateDomValue();
+        this._updateSchema(true);
         break;
 
       case 'keydown':
