@@ -182,9 +182,9 @@ var _defs = {
 
 var _defaultLang = 'en';
 var _lang;
-var userLang = typeof navigator !== 'undefined' ?
-  navigator.language || navigator.userLanguage :
-  undefined;
+var userLang = typeof navigator !== 'undefined'
+  ? navigator.language || navigator.userLanguage
+  : undefined;
 _lang = _locales.find(function (l) {
   return l === userLang;
 });
